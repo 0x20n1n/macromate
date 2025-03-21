@@ -1,0 +1,470 @@
+@import 'tailwindcss';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../**/*.blade.php';
+@source '../**/*.js';
+
+@theme {
+    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+        'Segoe UI Symbol', 'Noto Color Emoji';
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Explicit Light Mode Colors */
+:root {
+    --light-bg: #ffffff;
+    --light-text: #1a202c;
+    --light-text-secondary: #4a5568;
+    --light-card-bg: #ffffff;
+    --light-header-bg: #f8fafc;
+    --light-main-bg: #f1f5f9;
+    --light-btn-primary: #4f46e5;
+    --light-btn-primary-hover: #4338ca;
+    --dark-bg: #111827;
+    --dark-text: #f3f4f6;
+    --dark-text-secondary: #d1d5db;
+    --dark-card-bg: #1f2937;
+    --dark-header-bg: #1f2937;
+    --dark-main-bg: #111827;
+    --dark-btn-primary: #6366f1;
+    --dark-btn-primary-hover: #818cf8;
+}
+
+@layer base {
+    html {
+        @apply transition-colors duration-500;
+    }
+    
+    html:not(.dark) {
+        background-color: var(--light-main-bg);
+        color: var(--light-text);
+    }
+    
+    html.dark {
+        background-color: var(--dark-bg);
+        color: var(--dark-text);
+    }
+    
+    body {
+        @apply transition-colors duration-500;
+    }
+
+    html:not(.dark) body {
+        background-color: var(--light-main-bg);
+        color: var(--light-text);
+    }
+    
+    html.dark body {
+        background-color: var(--dark-bg);
+        color: var(--dark-text);
+    }
+    
+    h1, h2, h3, h4, h5, h6 {
+        @apply transition-colors duration-500;
+    }
+
+    html:not(.dark) h1, 
+    html:not(.dark) h2, 
+    html:not(.dark) h3, 
+    html:not(.dark) h4, 
+    html:not(.dark) h5, 
+    html:not(.dark) h6 {
+        color: var(--light-text);
+    }
+    
+    html.dark h1, 
+    html.dark h2, 
+    html.dark h3, 
+    html.dark h4, 
+    html.dark h5, 
+    html.dark h6 {
+        color: var(--dark-text);
+    }
+    
+    p {
+        @apply transition-colors duration-500;
+    }
+
+    html:not(.dark) p {
+        color: var(--light-text-secondary);
+    }
+    
+    html.dark p {
+        color: var(--dark-text-secondary);
+    }
+}
+
+@layer components {
+    .btn {
+        @apply font-medium rounded transition duration-300 ease-in-out focus:outline-none;
+    }
+
+    /* Original button styles but keeping the Revolut-inspired design */
+    .btn-primary {
+        @apply bg-indigo-600 hover:bg-indigo-700 text-white py-2.5 px-6 rounded-full transition-all font-medium;
+    }
+    
+    .btn-secondary {
+        @apply bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-900 dark:text-white py-2.5 px-6 rounded-full transition-all font-medium;
+    }
+
+    .btn-danger {
+        @apply bg-red-600 text-white hover:bg-red-700 focus:ring-red-500 transition-colors duration-300;
+    }
+
+    .btn-sm {
+        @apply px-3 py-1.5 text-xs;
+    }
+
+    .card {
+        @apply rounded-lg shadow transition-colors duration-500;
+    }
+    
+    html:not(.dark) .card {
+        background-color: var(--light-card-bg);
+        border: 1px solid #e5e7eb;
+    }
+    
+    html.dark .card {
+        background-color: var(--dark-card-bg);
+        border: 1px solid #374151;
+    }
+    
+    .feature-card {
+        @apply p-6 rounded-lg shadow hover:shadow-md transition-all duration-300;
+    }
+    
+    html:not(.dark) .feature-card {
+        background-color: var(--light-card-bg);
+    }
+    
+    html.dark .feature-card {
+        background-color: var(--dark-card-bg);
+        border: 1px solid #374151;
+    }
+
+    .feature-icon {
+        @apply w-12 h-12 rounded-full flex items-center justify-center mb-4 transition-colors duration-300;
+    }
+
+    html:not(.dark) .feature-icon {
+        @apply bg-indigo-100 text-indigo-600;
+    }
+
+    html.dark .feature-icon {
+        @apply bg-indigo-900/20 text-indigo-400;
+    }
+
+    /* Form styling for Revolut-inspired design */
+    .form-control {
+        @apply bg-white dark:bg-gray-800 border border-gray-400 dark:border-gray-700 rounded-lg py-2.5 px-4 w-full text-gray-800 dark:text-white transition duration-200;
+    }
+    
+    .form-control:focus {
+        @apply border-indigo-500 dark:border-indigo-400 ring-2 ring-indigo-500/20 dark:ring-indigo-400/20 outline-none;
+    }
+    
+    .form-control::placeholder {
+        @apply text-gray-500 dark:text-gray-400;
+    }
+    
+    .form-label {
+        @apply block text-sm font-semibold text-gray-800 dark:text-white mb-1.5;
+    }
+    
+    .input-group {
+        @apply mb-4;
+    }
+    
+    select.form-control {
+        @apply pr-10 appearance-none bg-no-repeat text-gray-800 dark:text-white;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+        background-position: right 0.5rem center;
+        background-size: 1.5em 1.5em;
+    }
+    
+    .form-control-sm {
+        @apply py-1.5 px-3 text-sm;
+    }
+    
+    .form-check {
+        @apply flex items-center space-x-2;
+    }
+    
+    .form-check-input {
+        @apply h-4 w-4 rounded border-gray-400 text-indigo-600 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700;
+    }
+    
+    .form-check-label {
+        @apply text-sm font-medium text-gray-700 dark:text-gray-300;
+    }
+    
+    /* Input error states */
+    .form-control.is-invalid {
+        @apply border-red-500 dark:border-red-500;
+    }
+    
+    .invalid-feedback {
+        @apply text-red-500 dark:text-red-400 text-sm mt-1;
+    }
+}
+
+/* Animated logo on homepage */
+.animated-logo {
+    animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+    0% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-20px);
+    }
+    100% {
+        transform: translateY(0px);
+    }
+}
+
+/* Custom styles */
+.form-input {
+    @apply w-full rounded-md shadow-sm transition-colors duration-300;
+}
+
+html:not(.dark) .form-input {
+    @apply border-gray-300 focus:border-indigo-500 focus:ring focus:ring-indigo-200;
+}
+
+html.dark .form-input {
+    @apply bg-gray-700 border-gray-600 text-white focus:border-indigo-500 focus:ring focus:ring-indigo-500;
+}
+
+.section-title {
+    @apply text-xl font-semibold mb-4 transition-colors duration-300;
+}
+
+html:not(.dark) .section-title {
+    color: var(--light-text);
+}
+
+html.dark .section-title {
+    color: var(--dark-text);
+}
+
+/* Backgrounds */
+.bg-header {
+    @apply transition-colors duration-500;
+}
+
+html:not(.dark) .bg-header {
+    background-color: var(--light-header-bg);
+    border-bottom: 1px solid #e5e7eb;
+}
+
+html.dark .bg-header {
+    background-color: var(--dark-header-bg);
+    border-bottom: 1px solid #374151;
+}
+
+.bg-main {
+    @apply transition-colors duration-500;
+}
+
+html:not(.dark) .bg-main {
+    background-color: var(--light-main-bg);
+}
+
+html.dark .bg-main {
+    background-color: var(--dark-main-bg);
+}
+
+.bg-footer {
+    @apply transition-colors duration-500;
+}
+
+html:not(.dark) .bg-footer {
+    background-color: var(--light-header-bg);
+    border-top: 1px solid #e5e7eb;
+}
+
+html.dark .bg-footer {
+    background-color: var(--dark-header-bg);
+    border-top: 1px solid #374151;
+}
+
+/* Macro Calculation Results */
+.results-card {
+    @apply p-6 rounded-lg shadow-md transition-colors duration-500;
+}
+
+html:not(.dark) .results-card {
+    background-color: var(--light-card-bg);
+    border: 1px solid #e5e7eb;
+}
+
+html.dark .results-card {
+    background-color: var(--dark-card-bg);
+    border: 1px solid #374151;
+}
+
+.macro-box {
+    @apply p-3 rounded text-center transition-colors duration-300;
+}
+
+html:not(.dark) .macro-box {
+    @apply text-gray-800;
+}
+
+html.dark .macro-box {
+    @apply text-gray-200;
+}
+
+.macro-box.balanced {
+    @apply transition-colors duration-300;
+}
+
+html:not(.dark) .macro-box.balanced {
+    @apply bg-indigo-50;
+}
+
+html.dark .macro-box.balanced {
+    @apply bg-indigo-900/30;
+}
+
+.macro-box.low-carb {
+    @apply transition-colors duration-300;
+}
+
+html:not(.dark) .macro-box.low-carb {
+    @apply bg-green-50;
+}
+
+html.dark .macro-box.low-carb {
+    @apply bg-green-900/30;
+}
+
+.macro-box.high-carb {
+    @apply transition-colors duration-300;
+}
+
+html:not(.dark) .macro-box.high-carb {
+    @apply bg-blue-50;
+}
+
+html.dark .macro-box.high-carb {
+    @apply bg-blue-900/30;
+}
+
+.goal-box {
+    @apply rounded-lg p-4 text-center border transition-colors duration-300;
+}
+
+html:not(.dark) .goal-box {
+    @apply text-gray-800;
+}
+
+html.dark .goal-box {
+    @apply text-gray-200;
+}
+
+.goal-box.loss {
+    @apply transition-colors duration-300;
+}
+
+html:not(.dark) .goal-box.loss {
+    @apply bg-red-50 border-red-200;
+}
+
+html.dark .goal-box.loss {
+    @apply bg-red-900/30 border-red-800;
+}
+
+.goal-box.maintain {
+    @apply transition-colors duration-300;
+}
+
+html:not(.dark) .goal-box.maintain {
+    @apply bg-indigo-50 border-indigo-200;
+}
+
+html.dark .goal-box.maintain {
+    @apply bg-indigo-900/30 border-indigo-800;
+}
+
+.goal-box.gain {
+    @apply transition-colors duration-300;
+}
+
+html:not(.dark) .goal-box.gain {
+    @apply bg-green-50 border-green-200;
+}
+
+html.dark .goal-box.gain {
+    @apply bg-green-900/30 border-green-800;
+}
+
+@layer utilities {
+    .text-primary {
+        @apply transition-colors duration-300;
+    }
+    
+    html:not(.dark) .text-primary {
+        color: var(--light-text);
+    }
+    
+    html.dark .text-primary {
+        color: var(--dark-text);
+    }
+    
+    .text-secondary {
+        @apply transition-colors duration-300;
+    }
+    
+    html:not(.dark) .text-secondary {
+        color: var(--light-text-secondary);
+    }
+    
+    html.dark .text-secondary {
+        color: var(--dark-text-secondary);
+    }
+    
+    .text-muted {
+        @apply transition-colors duration-300;
+    }
+    
+    html:not(.dark) .text-muted {
+        @apply text-gray-500;
+    }
+    
+    html.dark .text-muted {
+        @apply text-gray-400;
+    }
+    
+    .text-brand {
+        @apply transition-colors duration-300;
+    }
+    
+    html:not(.dark) .text-brand {
+        @apply text-indigo-600;
+    }
+    
+    html.dark .text-brand {
+        @apply text-indigo-400;
+    }
+    
+    .text-brand-dark {
+        @apply transition-colors duration-300;
+    }
+    
+    html:not(.dark) .text-brand-dark {
+        @apply text-indigo-800;
+    }
+    
+    html.dark .text-brand-dark {
+        @apply text-indigo-400;
+    }
+}
