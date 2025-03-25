@@ -26,15 +26,113 @@
 
       <!-- Height Input -->
       <div>
-        <label for="height" class="text-white font-medium mb-2 block">Height (cm)</label>
-        <input type="number" id="height" v-model="form.height" class="form-control" step="0.1" min="1" max="300">
+        <div class="flex justify-between items-center mb-2">
+          <label class="text-white font-medium block">Height</label>
+          <div class="flex items-center space-x-2 text-white text-sm">
+            <span :class="{'opacity-100': !useMetric, 'opacity-50': useMetric}">Imperial</span>
+            <button 
+              type="button" 
+              @click="toggleUnits"
+              class="relative inline-flex h-6 w-11 items-center rounded-full bg-gray-200 dark:bg-gray-700"
+            >
+              <span 
+                class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform" 
+                :class="useMetric ? 'translate-x-6' : 'translate-x-1'"
+              ></span>
+            </button>
+            <span :class="{'opacity-100': useMetric, 'opacity-50': !useMetric}">Metric</span>
+          </div>
+        </div>
+
+        <div v-if="!useMetric" class="flex space-x-2">
+          <div class="flex-1">
+            <input 
+              type="number" 
+              id="heightFeet" 
+              v-model="heightFeet" 
+              class="form-control" 
+              min="1" 
+              max="8"
+              placeholder="ft"
+              @input="updateHeightInCm"
+            >
+          </div>
+          <div class="flex-1">
+            <input 
+              type="number" 
+              id="heightInches" 
+              v-model="heightInches" 
+              class="form-control" 
+              min="0" 
+              max="11" 
+              step="1"
+              placeholder="in"
+              @input="updateHeightInCm"
+            >
+          </div>
+        </div>
+
+        <div v-else>
+          <input 
+            type="number" 
+            id="height" 
+            v-model="form.height" 
+            class="form-control" 
+            step="0.1" 
+            min="1" 
+            max="300"
+            placeholder="cm"
+          >
+        </div>
+
         <p v-if="errors.height" class="text-red-300 text-sm mt-1">{{ errors.height[0] }}</p>
       </div>
 
       <!-- Weight Input -->
       <div>
-        <label for="weight" class="text-white font-medium mb-2 block">Weight (kg)</label>
-        <input type="number" id="weight" v-model="form.weight" class="form-control" step="0.1" min="1" max="500">
+        <div class="flex justify-between items-center mb-2">
+          <label class="text-white font-medium block">Weight</label>
+          <div class="flex items-center space-x-2 text-white text-sm">
+            <span :class="{'opacity-100': !useMetric, 'opacity-50': useMetric}">lbs</span>
+            <button 
+              type="button" 
+              @click="toggleUnits"
+              class="relative inline-flex h-6 w-11 items-center rounded-full bg-gray-200 dark:bg-gray-700"
+            >
+              <span 
+                class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform" 
+                :class="useMetric ? 'translate-x-6' : 'translate-x-1'"
+              ></span>
+            </button>
+            <span :class="{'opacity-100': useMetric, 'opacity-50': !useMetric}">kg</span>
+          </div>
+        </div>
+
+        <div v-if="!useMetric">
+          <input 
+            type="number" 
+            id="weightLbs" 
+            v-model="weightLbs" 
+            class="form-control" 
+            step="0.1" 
+            min="1" 
+            max="1000"
+            placeholder="lbs"
+            @input="updateWeightInKg"
+          >
+        </div>
+        <div v-else>
+          <input 
+            type="number" 
+            id="weight" 
+            v-model="form.weight" 
+            class="form-control" 
+            step="0.1" 
+            min="1" 
+            max="500"
+            placeholder="kg"
+          >
+        </div>
         <p v-if="errors.weight" class="text-red-300 text-sm mt-1">{{ errors.weight[0] }}</p>
       </div>
 
@@ -112,6 +210,10 @@ export default {
         formula: 'mifflin_st_jeor',
         body_fat: null,
       },
+      useMetric: false,
+      heightFeet: null,
+      heightInches: null,
+      weightLbs: null,
       errors: {},
       formError: null,
       isLoading: false,
@@ -124,8 +226,75 @@ export default {
     } else {
       this.fetchActivities();
     }
+    
+    // Set default values for height in feet/inches (5'10" is a common average height)
+    this.heightFeet = 5;
+    this.heightInches = 10;
+    
+    // Initialize the height in cm based on the default feet/inches
+    this.updateHeightInCm();
+    
+    // Set default weight in lbs (170 lbs is a common average weight)
+    this.weightLbs = 170;
+    
+    // Initialize the weight in kg based on the default lbs
+    this.updateWeightInKg();
   },
   methods: {
+    toggleUnits() {
+      this.useMetric = !this.useMetric;
+      
+      if (this.useMetric) {
+        // Convert imperial to metric
+        if (this.heightFeet && this.heightInches !== null) {
+          this.updateHeightInCm();
+        }
+        if (this.weightLbs) {
+          this.updateWeightInKg();
+        }
+      } else {
+        // Convert metric to imperial
+        if (this.form.height) {
+          this.convertCmToFeetInches();
+        }
+        if (this.form.weight) {
+          this.convertKgToLbs();
+        }
+      }
+    },
+    
+    updateHeightInCm() {
+      if (this.heightFeet !== null) {
+        // Convert feet and inches to cm: 1 foot = 30.48 cm, 1 inch = 2.54 cm
+        const inches = (this.heightFeet * 12) + (this.heightInches || 0);
+        this.form.height = parseFloat((inches * 2.54).toFixed(1));
+      }
+    },
+    
+    convertCmToFeetInches() {
+      if (this.form.height) {
+        // Convert cm to inches
+        const totalInches = this.form.height / 2.54;
+        // Convert to feet and inches
+        this.heightFeet = Math.floor(totalInches / 12);
+        this.heightInches = Math.round(totalInches % 12);
+      }
+    },
+    
+    updateWeightInKg() {
+      if (this.weightLbs) {
+        // Convert pounds to kilograms
+        this.form.weight = parseFloat((this.weightLbs * 0.453592).toFixed(1));
+      }
+    },
+    
+    convertKgToLbs() {
+      if (this.form.weight) {
+        // Convert kilograms to pounds
+        this.weightLbs = parseFloat((this.form.weight / 0.453592).toFixed(1));
+      }
+    },
+    
     async fetchActivities() {
       try {
         const response = await fetch('/api/activities');
@@ -138,10 +307,17 @@ export default {
         console.error('Error fetching activities:', error);
       }
     },
+    
     submitForm() {
       // Reset errors
       this.errors = {};
       this.formError = null;
+      
+      // If using imperial, ensure values are converted to metric before submission
+      if (!this.useMetric) {
+        this.updateHeightInCm();
+        this.updateWeightInKg();
+      }
       
       // Check for empty values
       if (!this.form.age) {
