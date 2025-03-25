@@ -9,10 +9,14 @@
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <calculation-form 
-            initial-activities='@json($activities)'
-            @calculation-completed="showCalculationResults">
-        </calculation-form>
+        <div class="bg-gray-800 rounded-lg shadow-xl overflow-hidden">
+            <div class="p-2">
+                <calculation-form 
+                    initial-activities='@json($activities)'
+                    @calculation-completed="showCalculationResults">
+                </calculation-form>
+            </div>
+        </div>
         <div class="md:col-span-1">
             <div class="card p-6">
                 <h2 class="section-title">About Our Calculator</h2>
